@@ -1,0 +1,96 @@
+import requests
+from sqlalchemy import create_engine
+from sqlalchemy.pool import StaticPool
+import sqlite3
+import requests
+import json
+from langchain_community.utilities.sql_database import SQLDatabase
+import os
+from groq import Groq
+from dotenv import load_dotenv 
+# loading variables from .env file
+load_dotenv() 
+
+
+NL_TO_SQL_API = os.getenv("NL_TO_SQL_API")
+
+def get_engine_for_chinook_db():
+    """Pull sql file, populate in-memory database, and create engine."""
+    url = "https://raw.githubusercontent.com/lerocha/chinook-database/master/ChinookDatabase/DataSources/Chinook_Sqlite.sql"
+    response = requests.get(url)
+    sql_script = response.text
+
+    connection = sqlite3.connect(":memory:", check_same_thread=False)
+    connection.executescript(sql_script)
+    return create_engine(
+        "sqlite://",
+        creator=lambda: connection,
+        poolclass=StaticPool,
+        connect_args={"check_same_thread": False},
+    )
+
+
+def get_nlp_to_sql_results(question, schema):
+
+    url = f"{NL_TO_SQL_API}/generate-sql"
+
+    payload = json.dumps({
+    "question": question,
+    "schema" : schema
+    })
+    headers = {
+    'Content-Type': 'application/json'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+    print(response.json())
+    return response.json()['sql_query']
+
+def query_to_answer(query, db):
+    from langchain_community.tools.sql_database.tool import QuerySQLDataBaseTool
+    execute_query = QuerySQLDataBaseTool(db=db)
+    answer = execute_query.invoke(query)
+    return answer
+
+def generate_rephrased_answer(question, answer):
+    api_key = "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"
+    model_name = "llama-3.1-8b-instant"
+
+    client = Groq(api_key=api_key)
+    
+    messages = [
+        {
+            "role": "system",
+            "content": (
+                "You are a good assistant for rephrasing answers. I will give you the question "
+                "and answer, and you have to rewrite the answer with one like this:\n"
+                "For example:\n"
+                "Question: How many orders are there?\n"
+                "Answer: [(412,)]\n"
+                "Response: There are a total of 412 orders.\n\n"
+                "If you are not able to generate the response, then return the response as "
+                "\"I am not able to find the answer.\""
+            )
+        },
+        {
+            "role": "user",
+            "content": f"question = {question}\nanswer = {answer}"
+        }
+    ]
+    
+    completion = client.chat.completions.create(
+        model=model_name,
+        messages=messages,
+        temperature=1,
+        max_tokens=1024,
+        top_p=1,
+        stream=True,
+        stop=None,
+    )
+    
+    response = ""
+    for chunk in completion:
+        response += chunk.choices[0].delta.content or ""
+    
+    return response
