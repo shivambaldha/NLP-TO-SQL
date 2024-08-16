@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 # loading variables from .env file
 load_dotenv() 
 
+dash_line = '-'.join('' for x in range(100))
 
 NL_TO_SQL_API = os.getenv("NL_TO_SQL_API")
 
@@ -29,6 +30,19 @@ def get_engine_for_chinook_db():
         connect_args={"check_same_thread": False},
     )
 
+def database_from_sqlitefile(sql_file):
+    """Read SQL file from local path, populate in-memory database, and create engine."""
+    with open(sql_file, 'r') as file:
+        sql_script = file.read()
+
+    connection = sqlite3.connect(":memory:", check_same_thread=False)
+    connection.executescript(sql_script)
+    return create_engine(
+        "sqlite://",
+        creator=lambda: connection,
+        poolclass=StaticPool,
+        connect_args={"check_same_thread": False},
+    )
 
 def get_nlp_to_sql_results(question, schema):
 
@@ -44,13 +58,15 @@ def get_nlp_to_sql_results(question, schema):
 
     response = requests.request("POST", url, headers=headers, data=payload)
 
-    print(response.json())
+    print("response : ", response.json())
     return response.json()['sql_query']
 
 def query_to_answer(query, db):
     from langchain_community.tools.sql_database.tool import QuerySQLDataBaseTool
     execute_query = QuerySQLDataBaseTool(db=db)
     answer = execute_query.invoke(query)
+    print("answer: ",answer)
+    print(dash_line)
     return answer
 
 def generate_rephrased_answer(question, answer):
@@ -92,5 +108,4 @@ def generate_rephrased_answer(question, answer):
     response = ""
     for chunk in completion:
         response += chunk.choices[0].delta.content or ""
-    
     return response
