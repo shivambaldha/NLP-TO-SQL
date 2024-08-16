@@ -34,7 +34,7 @@ def main():
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-    # Handle file upload
+    # Handle file upload 
     if uploaded_file is not None:
         try:
             # Save the uploaded file to a temporary location
@@ -49,6 +49,11 @@ def main():
             db = SQLDatabase(engine)
             schema = db.table_info
 
+            # Display the schema in the sidebar
+            with st.sidebar:
+                st.subheader("Database Schema")
+                st.text_area("Schema", schema, height=400)
+
             # Clean up the temporary file
             os.remove(temp_file_path)
 
@@ -57,7 +62,7 @@ def main():
             st.stop()
     else:
         st.info("""Please upload a .sql file,
-                \n Note: you have uploaded only .sql files with correct schema and premissions""")
+                \n Note: you have uploaded only .sql files with correct schema and permissions""")
         st.stop()
 
     # Accept user input
