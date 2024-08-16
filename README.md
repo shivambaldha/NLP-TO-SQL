@@ -1,4 +1,5 @@
 # NLP-TO-SQL
+![image](https://github.com/user-attachments/assets/198c884d-399d-4de8-8c31-8325d5eb1f8f)
 
 ## Steps:
 
