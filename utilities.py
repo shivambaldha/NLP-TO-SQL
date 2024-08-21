@@ -66,7 +66,6 @@ def query_to_answer(query, db):
     execute_query = QuerySQLDataBaseTool(db=db)
     answer = execute_query.invoke(query)
     print("answer: ",answer)
-    print(dash_line)
     return answer
 
 def generate_rephrased_answer(question, answer):
@@ -99,7 +98,7 @@ def generate_rephrased_answer(question, answer):
         model=model_name,
         messages=messages,
         temperature=1,
-        max_tokens=1024,
+        max_tokens=8000,
         top_p=1,
         stream=True,
         stop=None,
@@ -108,4 +107,7 @@ def generate_rephrased_answer(question, answer):
     response = ""
     for chunk in completion:
         response += chunk.choices[0].delta.content or ""
+
+    print('generate_rephrased_answer' ,response)
+    print(dash_line)
     return response
