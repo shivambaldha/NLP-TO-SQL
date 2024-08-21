@@ -7,6 +7,7 @@ from utilities import (
     generate_rephrased_answer, 
     database_from_sqlitefile
 )
+from streamlit_mic_recorder import speech_to_text
 import os
 import tempfile
 
@@ -23,7 +24,7 @@ def main():
 
     # File uploader in the sidebar
     with st.sidebar:
-        uploaded_file = st.file_uploader("Upload a .sql file", type=None)
+        uploaded_file = st.file_uploader("Upload a .sql file", type=["sql"])
 
     # Initialize chat history
     if "messages" not in st.session_state:
@@ -65,8 +66,18 @@ def main():
                 \n Note: you have uploaded only .sql files with correct schema and permissions""")
         st.stop()
 
-    # Accept user input
-    prompt = st.chat_input("What is up?")
+    # Create two columns at the bottom for text input and audio input
+    col1, col2 = st.columns([3, 1])
+
+    with col1:
+        prompt = st.chat_input("What is up?")
+
+    with col2:
+        # st.write("Or use voice input:")
+        text = speech_to_text(language='en', use_container_width=True, just_once=True, key='STT')
+        if text:
+            prompt = text
+
     if prompt:
         try:
             # Add user message to chat history
