@@ -32,7 +32,7 @@ def get_engine_for_chinook_db():
 
 def database_from_sqlitefile(sql_file):
     """Read SQL file from local path, populate in-memory database, and create engine."""
-    with open(sql_file, 'r') as file:
+    with open(sql_file, 'r') as file:   
         sql_script = file.read()
 
     connection = sqlite3.connect(":memory:", check_same_thread=False)
@@ -78,14 +78,24 @@ def generate_rephrased_answer(question, answer):
         {
             "role": "system",
             "content": (
-                "You are a good assistant for rephrasing answers. I will give you the question "
-                "and answer, and you have to rewrite the answer with one like this:\n"
-                "For example:\n"
-                "Question: How many orders are there?\n"
-                "Answer: [(412,)]\n"
-                "Response: There are a total of 412 orders.\n\n"
-                "If you are not able to generate the response, then return the response as "
-                "\"I am not able to find the answer.\""
+            """ You are a good assistant for rephrasing answers. I will give you the question 
+                and answer, and you have to rewrite the answer with one like this:\n
+                For example:\
+                Question: How many orders are there?\n
+                Answer: [(412,)]\n
+                Response: There are a total of 412 orders.\n\n
+
+                Question: give me a top five customers who spend more
+                Answer: [('Helena', 'Holý', 49.620000000000005), ('Richard', 'Cunningham', 47.620000000000005), ('Luis', 'Rojas', 46.62), ('Ladislav', 'Kovács', 45.62), ('Hugh', "O'Reilly", 45.62)]
+                Response:
+                    The top four customers based on their spending are:
+                    1. Helena Holý with a total of $49.62,
+                    2. Richard Cunningham with a total of $47.62,
+                    3. Luis Rojas with a total of $46.62,
+                    4. (tied) Ladislav Kovács and Hugh O'Reilly both with a total of $45.62.
+
+                If you are not able to generate the response, then return the response as 
+                \"I am not able to find the answer.\""""
             )
         },
         {

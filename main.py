@@ -53,7 +53,8 @@ def main():
             # Display the schema in the sidebar
             with st.sidebar:
                 st.subheader("Database Schema")
-                st.text_area("Schema", schema, height=400)
+                # st.text_area("Schema", schema, height=400 , label_visibility = "hidden")
+                st.code(schema , language="sql" , line_numbers=True)
 
             # Clean up the temporary file
             os.remove(temp_file_path)
