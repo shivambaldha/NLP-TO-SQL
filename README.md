@@ -1,8 +1,12 @@
 # NLP-TO-SQL
+
+## UI
 ![image](https://github.com/user-attachments/assets/198c884d-399d-4de8-8c31-8325d5eb1f8f)
 
-## Steps:
+## Chatbot Solution Architecture
+![image](https://github.com/user-attachments/assets/8626c8c2-9691-4b8c-822d-a1c9e11ea13d)
 
+## Steps:
 1. **Run the Jupyter Notebook:**
    - Open the `.ipynb` file in Kaggle and run it with GPU enabled. This notebook will generate an API.
 
