@@ -1,5 +1,12 @@
 # NLP-TO-SQL
 
+## Introduction
+
+* NLP-to-SQL is a technique that converts natural language(Text) queries into SQL queries, enabling databases to execute them with the assistance of large language models (LLMs). Although large language models (LLMs) can understand and    transform natural language, generating accurate SQL queries tailored to a specific schema can be challenging.
+
+* To address this challenge, we utilize a domain-specific LLM to achieve more accurate results. Specifically, we employ ```SQLcoder-8B```, which is fine-tuned on top of ```Llama-3``` for the text-to-SQL task.
+
+
 ## UI
 ![image](https://github.com/user-attachments/assets/198c884d-399d-4de8-8c31-8325d5eb1f8f)
 
@@ -24,6 +31,8 @@
      ```bash
      streamlit run main.py
      ```
+## SQLCoder Benchmark 
+![Image](https://cdn-uploads.huggingface.co/production/uploads/603bbad3fd770a9997b57cb6/h52Z_OKYBaDDQMFZyU5pF.png)
 ## Limitations
 1. Deploying this app requires a high-performance GPU to support SQLcoder and the Llama 3.1 LLM.
 2. The app currently only supports text-based responses.
