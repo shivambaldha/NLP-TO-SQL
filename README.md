@@ -24,3 +24,8 @@
      ```bash
      streamlit run main.py
      ```
+## Limitations
+1. Deploying this app requires a high-performance GPU to support SQLcoder and the Llama 3.1 LLM.
+2. The app currently only supports text-based responses.
+3. The inference speed is somewhat slow.
+4. As of now, we only support publicly available databases, specifically ```.sql``` files.
