@@ -33,6 +33,7 @@
      ```
 ## SQLCoder-8b Benchmark 
 ![Image](https://cdn-uploads.huggingface.co/production/uploads/603bbad3fd770a9997b57cb6/h52Z_OKYBaDDQMFZyU5pF.png)
+
 ## Limitations
 1. Deploying this app requires a high-performance GPU to support SQLcoder and the Llama 3.1 LLM.
 2. The app currently only supports text-based responses.
