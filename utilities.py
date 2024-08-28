@@ -7,13 +7,14 @@ import json
 from langchain_community.utilities.sql_database import SQLDatabase
 import os
 from groq import Groq
-from dotenv import load_dotenv 
+from dotenv import load_dotenv
+from settings import env
 # loading variables from .env file
 load_dotenv() 
 
 dash_line = '-'.join('' for x in range(100))
 
-NL_TO_SQL_API = os.getenv("NL_TO_SQL_API")
+NL_TO_SQL_API = env.ngrok["ngrok_api"]
 
 def get_engine_for_chinook_db():
     """Pull sql file, populate in-memory database, and create engine."""
@@ -69,7 +70,7 @@ def query_to_answer(query, db):
     return answer
 
 def generate_rephrased_answer(question, answer):
-    api_key = "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"
+    api_key = env.groq["groq_api"]
     model_name = "llama-3.1-8b-instant"
 
     client = Groq(api_key=api_key)
