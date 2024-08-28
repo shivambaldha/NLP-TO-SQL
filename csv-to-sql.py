@@ -30,9 +30,10 @@ def guess_table_name(csv_file):
             table_name += random.choice(string.ascii_lowercase)
     return table_name
 
-def csv_to_sql(csv_file_path) -> str:
+def csv_to_sql(csv_file_path, actual_file_name) -> str:
     # Guess the table name from the CSV file name
-    table_name = guess_table_name(csv_file_path)
+    
+    table_name = guess_table_name(actual_file_name)
     
     # Read the CSV file into a DataFrame
     df = pd.read_csv(csv_file_path)
