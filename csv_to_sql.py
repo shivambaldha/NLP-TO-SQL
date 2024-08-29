@@ -32,7 +32,6 @@ def guess_table_name(csv_file):
 
 def csv_to_sql(csv_file_path, actual_file_name) -> str:
     # Guess the table name from the CSV file name
-    print(actual_file_name)
     table_name = guess_table_name(actual_file_name)
     
     # Read the CSV file into a DataFrame
