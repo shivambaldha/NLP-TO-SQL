@@ -20,7 +20,7 @@ def guess_table_name(csv_file):
     allowed by slite3 documentation.
     '''
     # when in CSV file name there are letters too
-    regex = re.compile('[^a-z]')
+    regex = re.compile('[^a-zA-Z]')
     table_name = csv_file.split("/")[-1].split(".")[0]
     table_name = regex.sub('', table_name)
 
@@ -30,9 +30,9 @@ def guess_table_name(csv_file):
             table_name += random.choice(string.ascii_lowercase)
     return table_name
 
-def csv_to_sql(csv_file_path) -> str:
+def csv_to_sql(csv_file_path, actual_file_name) -> str:
     # Guess the table name from the CSV file name
-    table_name = guess_table_name(csv_file_path)
+    table_name = guess_table_name(actual_file_name)
     
     # Read the CSV file into a DataFrame
     df = pd.read_csv(csv_file_path)
@@ -73,7 +73,8 @@ def csv_to_sql(csv_file_path) -> str:
     # Determine the SQL file path in the current directory
     sql_file_name = f"{table_name}.sql"
     sql_file_path = os.path.join(os.getcwd(), sql_file_name)
-    
+    # print(sql_schema)
+    # print(sql_data)
     # Write the schema and data to the SQL file
     with open(sql_file_path, 'w') as sql_file:
         sql_file.write(sql_schema)

@@ -10,6 +10,7 @@ from utilities import (
 from streamlit_mic_recorder import speech_to_text
 import os
 import tempfile
+from csv_to_sql import csv_to_sql
 
 def main():
 
@@ -24,8 +25,7 @@ def main():
 
     # File uploader in the sidebar
     with st.sidebar:
-        uploaded_file = st.file_uploader("Upload a .sql file", type=["sql"])
-
+        uploaded_file = st.file_uploader("Upload a .sql file", type=["sql","csv"])
     # Initialize chat history
     if "messages" not in st.session_state:
         st.session_state.messages = []
@@ -42,9 +42,12 @@ def main():
             with tempfile.NamedTemporaryFile(delete=False) as temp_file:
                 temp_file.write(uploaded_file.read())
                 temp_file_path = temp_file.name
-
             st.write(f"Uploaded file: {uploaded_file.name}")
-
+            ext=uploaded_file.name.split(".")[-1]
+            # print(temp_file_path)
+            # print(uploaded_file)
+            if ext =="csv":       
+                temp_file_path=csv_to_sql(temp_file_path, uploaded_file.name)
             # Load the database from the temporary file
             engine = database_from_sqlitefile(sql_file=temp_file_path)
             db = SQLDatabase(engine)
