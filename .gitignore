@@ -1,0 +1,17 @@
+# Ignore Jupyter notebook files
+*.ipynb
+
+# Ignore CSV files
+*.csv
+
+# Ignore SQL files
+*.sql
+
+# Ignore Python bytecode cache
+__pycache__/
+
+#Ignore environment files
+*.env
+
+# Ignore all SQLite files
+*.sqlite
