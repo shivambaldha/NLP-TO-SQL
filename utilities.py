@@ -9,12 +9,14 @@ import os
 from groq import Groq
 from dotenv import load_dotenv
 from settings import env
-# loading variables from .env file
-load_dotenv() 
 
-dash_line = '-'.join('' for x in range(100))
+# loading variables from .env file
+load_dotenv()
+
+dash_line = "-".join("" for x in range(100))
 
 NL_TO_SQL_API = env.ngrok["ngrok_api"]
+
 
 def get_engine_for_chinook_db():
     """Pull sql file, populate in-memory database, and create engine."""
@@ -31,9 +33,10 @@ def get_engine_for_chinook_db():
         connect_args={"check_same_thread": False},
     )
 
+
 def database_from_sqlitefile(sql_file):
     """Read SQL file from local path, populate in-memory database, and create engine."""
-    with open(sql_file, 'r') as file:   
+    with open(sql_file, "r") as file:
         sql_script = file.read()
 
     connection = sqlite3.connect(":memory:", check_same_thread=False)
@@ -45,41 +48,40 @@ def database_from_sqlitefile(sql_file):
         connect_args={"check_same_thread": False},
     )
 
+
 def get_nlp_to_sql_results(question, schema):
 
     url = f"{NL_TO_SQL_API}/generate-sql"
 
-    payload = json.dumps({
-    "question": question,
-    "schema" : schema
-    })
-    headers = {
-    'Content-Type': 'application/json'
-    }
+    payload = json.dumps({"question": question, "schema": schema})
+    headers = {"Content-Type": "application/json"}
 
     response = requests.request("POST", url, headers=headers, data=payload)
 
     print("response : ", response.json())
-    return response.json()['sql_query']
+    return response.json()["sql_query"]
+
 
 def query_to_answer(query, db):
     from langchain_community.tools.sql_database.tool import QuerySQLDataBaseTool
+
     execute_query = QuerySQLDataBaseTool(db=db)
     answer = execute_query.invoke(query)
-    print("answer: ",answer)
+    print("answer: ", answer)
     return answer
+
 
 def generate_rephrased_answer(question, answer):
     api_key = env.groq["groq_api"]
     model_name = "llama-3.1-8b-instant"
 
     client = Groq(api_key=api_key)
-    
+
     messages = [
         {
             "role": "system",
             "content": (
-            """ You are a good assistant for rephrasing answers. I will give you the question 
+                """ You are a good assistant for rephrasing answers. I will give you the question 
                 and answer, and you have to rewrite the answer with one like this:\n
                 For example:\
                 Question: How many orders are there?\n
@@ -97,14 +99,11 @@ def generate_rephrased_answer(question, answer):
 
                 If you are not able to generate the response, then return the response as 
                 \"I am not able to find the answer.\""""
-            )
+            ),
         },
-        {
-            "role": "user",
-            "content": f"question = {question}\nanswer = {answer}"
-        }
+        {"role": "user", "content": f"question = {question}\nanswer = {answer}"},
     ]
-    
+
     completion = client.chat.completions.create(
         model=model_name,
         messages=messages,
@@ -114,11 +113,11 @@ def generate_rephrased_answer(question, answer):
         stream=True,
         stop=None,
     )
-    
+
     response = ""
     for chunk in completion:
         response += chunk.choices[0].delta.content or ""
 
-    print('generate_rephrased_answer' ,response)
+    print("generate_rephrased_answer", response)
     print(dash_line)
     return response

@@ -1,16 +1,17 @@
 import streamlit as st
 from langchain_community.utilities.sql_database import SQLDatabase
 from utilities import (
-    get_engine_for_chinook_db, 
-    get_nlp_to_sql_results, 
-    query_to_answer, 
-    generate_rephrased_answer, 
-    database_from_sqlitefile
+    get_engine_for_chinook_db,
+    get_nlp_to_sql_results,
+    query_to_answer,
+    generate_rephrased_answer,
+    database_from_sqlitefile,
 )
 from streamlit_mic_recorder import speech_to_text
 import os
 import tempfile
 from csv_to_sql import csv_to_sql
+
 
 def main():
 
@@ -25,7 +26,7 @@ def main():
 
     # File uploader in the sidebar
     with st.sidebar:
-        uploaded_file = st.file_uploader("Upload a .sql file", type=["sql","csv"])
+        uploaded_file = st.file_uploader("Upload a .sql file", type=["sql", "csv"])
     # Initialize chat history
     if "messages" not in st.session_state:
         st.session_state.messages = []
@@ -35,7 +36,7 @@ def main():
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-    # Handle file upload 
+    # Handle file upload
     if uploaded_file is not None:
         try:
             # Save the uploaded file to a temporary location
@@ -43,11 +44,11 @@ def main():
                 temp_file.write(uploaded_file.read())
                 temp_file_path = temp_file.name
             st.write(f"Uploaded file: {uploaded_file.name}")
-            ext=uploaded_file.name.split(".")[-1]
+            ext = uploaded_file.name.split(".")[-1]
             # print(temp_file_path)
             # print(uploaded_file)
-            if ext =="csv":       
-                temp_file_path=csv_to_sql(temp_file_path, uploaded_file.name)
+            if ext == "csv":
+                temp_file_path = csv_to_sql(temp_file_path, uploaded_file.name)
             # Load the database from the temporary file
             engine = database_from_sqlitefile(sql_file=temp_file_path)
             db = SQLDatabase(engine)
@@ -57,7 +58,7 @@ def main():
             with st.sidebar:
                 st.subheader("Database Schema")
                 # st.text_area("Schema", schema, height=400 , label_visibility = "hidden")
-                st.code(schema , language="sql" , line_numbers=True)
+                st.code(schema, language="sql", line_numbers=True)
 
             # Clean up the temporary file
             os.remove(temp_file_path)
@@ -66,8 +67,10 @@ def main():
             st.error(f"Error loading the database: {e}")
             st.stop()
     else:
-        st.info("""Please upload a .sql file,
-                \n Note: you have uploaded only .sql files with correct schema and permissions""")
+        st.info(
+            """Please upload a .sql file,
+                \n Note: you have uploaded only .sql files with correct schema and permissions"""
+        )
         st.stop()
 
     # Create two columns at the bottom for text input and audio input
@@ -78,7 +81,9 @@ def main():
 
     with col2:
         # st.write("Or use voice input:")
-        text = speech_to_text(language='en', use_container_width=True, just_once=True, key='STT')
+        text = speech_to_text(
+            language="en", use_container_width=True, just_once=True, key="STT"
+        )
         if text:
             prompt = text
 
@@ -89,21 +94,26 @@ def main():
             # Display user message in chat message container
             with st.chat_message("user"):
                 st.markdown(prompt)
-            
+
             # Generate and execute SQL query
             response = get_nlp_to_sql_results(question=prompt, schema=schema)
             executed_answer = query_to_answer(query=response, db=db)
-            rephrased_answer = generate_rephrased_answer(question=prompt, answer=executed_answer)
+            rephrased_answer = generate_rephrased_answer(
+                question=prompt, answer=executed_answer
+            )
 
             # Display assistant response in chat message container
             with st.spinner("Generating response..."):
                 with st.chat_message("assistant"):
                     st.markdown(rephrased_answer)
 
-            st.session_state.messages.append({"role": "assistant", "content": rephrased_answer})
+            st.session_state.messages.append(
+                {"role": "assistant", "content": rephrased_answer}
+            )
 
         except Exception as e:
             st.error(f"An error occurred: {e}")
+
 
 if __name__ == "__main__":
     try:
