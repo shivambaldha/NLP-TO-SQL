@@ -32,6 +32,19 @@ def guess_table_name(csv_file):
             table_name += random.choice(string.ascii_lowercase)
     return table_name
 
+# Function to rename columns to be database-compatible
+def rename_columns_for_db(df:pd.DataFrame):
+    # Convert column names to lowercase
+    df.columns = df.columns.str.lower()
+    # Replace spaces with underscores
+    df.columns = df.columns.str.replace(' ', '_')
+    # Replace non-alphanumeric characters (except underscores) with nothing
+    df.columns = df.columns.str.replace(r'\W', '', regex=True)
+    # Ensure column names don't start with numbers
+    df.columns = ['_' + col if col[0].isdigit() else col for col in df.columns]
+    
+    return df
+
 
 def csv_to_sql(csv_file_path, actual_file_name) -> str:
     # Guess the table name from the CSV file name
@@ -39,6 +52,7 @@ def csv_to_sql(csv_file_path, actual_file_name) -> str:
 
     # Read the CSV file into a DataFrame
     df = pd.read_csv(csv_file_path)
+    df = rename_columns_for_db(df)
 
     # Check if any column has unique values across all rows
     primary_key_column = None
