@@ -5,13 +5,11 @@
 * NLP-to-SQL is a technique that converts natural language(Text) queries into SQL queries, enabling databases to execute them with the assistance of large language models (LLMs). Although large language models (LLMs) can understand and    transform natural language, generating accurate SQL queries tailored to a specific schema can be challenging.
 
 * To address this challenge, we utilize a domain-specific LLM to achieve more accurate results. Specifically, we employ ```SQLcoder-8B```, which is fine-tuned on top of ```Llama-3``` for the text-to-SQL task.
-
+## Chatbot Solution Architecture
+![image](https://github.com/user-attachments/assets/8626c8c2-9691-4b8c-822d-a1c9e11ea13d)
 
 ## UI
 ![image](https://github.com/user-attachments/assets/198c884d-399d-4de8-8c31-8325d5eb1f8f)
-
-## Chatbot Solution Architecture
-![image](https://github.com/user-attachments/assets/8626c8c2-9691-4b8c-822d-a1c9e11ea13d)
 
 ## Steps:
 1. **Run the Jupyter Notebook:**
