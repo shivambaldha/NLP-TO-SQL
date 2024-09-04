@@ -38,10 +38,9 @@
 1. Deploying this app requires a high-performance GPU to support SQLcoder and the Llama 3.1 LLM.
 2. The app currently only supports text-based responses.
 3. The inference speed is somewhat slow.
-4. As of now, we only support publicly available databases, specifically ```.sql``` files.
+4. As of now, we only support publicly available databases, specifically ```.sql/.csv``` files.
 
 ## Scope of work
 1. Add a feature for uploading SQL files from remote sources.
 2. Implement buffer memory for conversational chat.
-3. Integrate output as an audio feature.
-4. Enable multi-language support for conversations.
+3. Enable multi-language support for conversations.

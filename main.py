@@ -68,7 +68,7 @@ def main():
             st.stop()
     else:
         st.info(
-            """Please upload a .sql file,
+            """Please upload a .sql or .csv  file,
                 \n Note: you have uploaded only .sql files with correct schema and permissions"""
         )
         st.stop()
