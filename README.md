@@ -1,4 +1,5 @@
 # NLP-TO-SQL
+# Team Members - Aman Kumar and Shivam Badlhda
 
 ## Introduction
 
